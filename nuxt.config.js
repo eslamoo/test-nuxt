@@ -1,4 +1,6 @@
 
+// eslint-disable-next-line nuxt/no-cjs-in-config
+const ampify = require('./plugins/ampify')
 export default {
   mode: 'universal',
   /*
@@ -48,9 +50,23 @@ export default {
   /*
   ** Build configuration
   */
+  hooks: {
+    // This hook is called  before saving the html to flat file
+    'generate:page': (page) => {
+      if (/^\/amp\//gi.test(page.route)) {
+        page.html = ampify(page.html)
+      }
+    },
+    // This hook is called before serving the html to the browser
+    'render:route': (url, page, { req, res }) => {
+      if (/^\/amp\//gi.test(url)) {
+        page.html = ampify(page.html)
+      }
+    }
+  },
   build: {
     /*
-    ** You can extend webpack config here
+    ** Yo u can extend webpack config here
     */
     extend(config, ctx) {
     }
