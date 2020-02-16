@@ -1,11 +1,14 @@
 
 // eslint-disable-next-line nuxt/no-cjs-in-config
-const ampify = require('./plugins/ampify')
+const { resolve } = require('path')
 export default {
   mode: 'universal',
   /*
   ** Headers of the page
   */
+  rootDir: resolve(__dirname, '..'),
+  buildDir: resolve(__dirname, '.nuxt'),
+  srcDir: __dirname,
   head: {
     title: process.env.npm_package_name || '',
     meta: [
@@ -20,6 +23,7 @@ export default {
   /*
   ** Customize the progress-bar color
   */
+
   loading: { color: '#fff' },
   /*
   ** Global CSS
@@ -41,32 +45,28 @@ export default {
   /*
   ** Nuxt.js modules
   */
+  render: {
+    resourceHints: false
+  },
+
   modules: [
-    '@ax2/gpt-ads-module'
+    '@ax2/gpt-ads-module',
+    '@nuxtjs/amp'
+
   ],
+  amp: {
+    origin: 'http://localhost:3000'
+  },
   gptAds: {
     networkCode: '96551095'
   },
   /*
   ** Build configuration
   */
-  hooks: {
-    // This hook is called  before saving the html to flat file
-    'generate:page': (page) => {
-      if (/^\/amp\//gi.test(page.route)) {
-        page.html = ampify(page.html)
-      }
-    },
-    // This hook is called before serving the html to the browser
-    'render:route': (url, page, { req, res }) => {
-      if (/^\/amp\//gi.test(url)) {
-        page.html = ampify(page.html)
-      }
-    }
-  },
+
   build: {
     /*
-    ** Yo u can extend webpack config here
+    ** Yo u can extend webpack config he re
     */
     extend(config, ctx) {
     }
